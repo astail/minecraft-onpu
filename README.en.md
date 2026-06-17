@@ -95,6 +95,7 @@ lp user <name> permission set notescope.use false
 ## How It Works (technical notes)
 
 - **Line-of-sight check**: every 4 ticks (~0.2 s) it loops over online players and casts `rayTraceBlocks(6.0, NEVER)` from the eye. If the first block hit is a note block (`BlockData instanceof NoteBlock`), it shows the info.
+- **Performance**: the cost is roughly `interval × online players × one ray trace`. The interval is 5×/second, each ray is a short voxel walk of at most 6 blocks (`FluidCollisionMode.NEVER` also skips fluid checks), and the 6 blocks around a player are always loaded so no extra chunk loading happens. The only thing that scales linearly is the player count; at a few dozen players it's negligible against the 50 ms/tick budget (for hundreds of players, lengthen the interval). The ray trace reads world state, so it runs on the main thread (`runTaskTimer`).
 - **Reading the pitch**: from `NoteBlock#getNote()` (`org.bukkit.Note`) it reads `getTone()` (letter), `isSharped()` (sharp) and `getId()` (0–24 tuning step). The octave number rolls over at C, so it's computed from `getId()` as `3 + (id + 6) / 12`.
 - **Reading the instrument**: `NoteBlock#getInstrument()` is mapped to a Japanese name (unknown instruments fall back to a prettified enum name).
 - **Display**: Adventure's `Player#sendActionBar(Component)` is used. It never spams chat and fades on its own once you look away.
