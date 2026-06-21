@@ -13,6 +13,14 @@ import org.bukkit.Note;
  *
  * <p>音符ブロックの音は 0〜24 の 25 段階（F#3〜F#5 の 2 オクターブ）。
  * バニラでは設置直後が 0（F#3）で、右クリックごとに +1 され 24 で 0 に戻る。
+ *
+ * <p><b>注意（起動初期に参照しないこと）:</b> 本クラスの static 初期化ブロックは列幅算出のため
+ * {@link Instrument#values()} を呼び、これが {@code Instrument →（Sound → Registry）} のクラス
+ * 初期化を誘発する。つまり本クラスの初期化はサーバーの RegistryAccess が用意済みであることに依存する。
+ * 現状は {@code NoteLookTask}（ゲームプレイ中のスケジュールタスク）からのみ参照されるためレジストリは
+ * 確実に初期化済みで問題ないが、{@code onEnable} 等の起動初期（レジストリ準備前）に本クラスを参照すると
+ * 初期化順次第で {@link ExceptionInInitializerError} になり得る。将来そうした早期参照が必要になった場合は、
+ * 列幅算出を初回 {@link #format} 呼び出し時の遅延初期化に切り替え、クラス初期化からレジストリ依存を外すこと。
  */
 final class NoteFormatter {
 
@@ -34,6 +42,9 @@ final class NoteFormatter {
             noteW = Math.max(noteW, FontWidth.width(noteHead(note) + solfegePart(note)));
             tuningW = Math.max(tuningW, FontWidth.width(tuningSegment(id)));
         }
+        // Instrument.values() は Instrument →（Sound → Registry）の初期化を誘発し、
+        // この static ブロックがサーバーの RegistryAccess 準備済みに依存する原因となる。
+        // そのため本クラスを起動初期（レジストリ準備前）に参照しないこと（クラス Javadoc 参照）。
         for (Instrument instrument : Instrument.values()) {
             instrumentW = Math.max(instrumentW, FontWidth.width(instrumentSegment(instrument)));
         }
