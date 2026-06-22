@@ -135,11 +135,11 @@ mvn clean package
 
 ### A. リリース版を使う（ビルド不要・推奨）
 
-[Releases](https://github.com/astail/minecraft-onpu/releases) から最新の `NoteScope-<version>.jar` をダウンロードします。JDK や Maven は不要です。
+[Releases](https://github.com/astail/mc-onpu/releases) から最新の `NoteScope-<version>.jar` をダウンロードします。JDK や Maven は不要です。
 
 ```bash
 # 最新リリースの jar をダウンロード（gh CLI を使う場合）
-gh release download --repo astail/minecraft-onpu --pattern '*.jar'
+gh release download --repo astail/mc-onpu --pattern '*.jar'
 ```
 
 ### B. 自分でビルドする

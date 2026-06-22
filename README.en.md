@@ -135,10 +135,10 @@ Put the jar in the server's `plugins/` and restart. Two ways to get the jar:
 
 ### A. Use a release build (no build needed, recommended)
 
-Download the latest `NoteScope-<version>.jar` from [Releases](https://github.com/astail/minecraft-onpu/releases). No JDK or Maven required.
+Download the latest `NoteScope-<version>.jar` from [Releases](https://github.com/astail/mc-onpu/releases). No JDK or Maven required.
 
 ```bash
-gh release download --repo astail/minecraft-onpu --pattern '*.jar'
+gh release download --repo astail/mc-onpu --pattern '*.jar'
 ```
 
 ### B. Build it yourself
